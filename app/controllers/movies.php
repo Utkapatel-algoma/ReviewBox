@@ -7,7 +7,7 @@ require_once MODELS . DS . 'Api.php';
 require_once MODELS . DS . 'OmdbApi.php';
 require_once MODELS . DS . 'MovieRating.php';
 
-class Movie extends Controller {
+class Movies extends Controller {
 
     protected $omdbApi;
     protected $movieRatingModel;
@@ -31,34 +31,40 @@ class Movie extends Controller {
         }
     }
 
-    public function index($imdbId = null) {
-        if ($imdbId) {
-            $this->details($imdbId);
-        } else {
-            // Default action if no movie ID is provided, redirect to home page
-            header('Location: /home');
-            exit();
-        }
-    }
+    // public function index($imdbId = null) {
+    //     if ($imdbId) {
+    //         $this->details($imdbId);
+    //     } else {
+    //         // Default action if no movie ID is provided, redirect to home page
+    //         header('Location: /home');
+    //         exit();
+    //     }
+    // }
 
     public function search() {
-        $searchTerm = $_GET['q'] ?? '';
-        $movies = []; // Initialize movies array
+        $searchTerm = $_GET['query'] ?? '';
+        $data = []; // Initialize movies array
 
+        if (empty($searchTerm)) {
+            $data['error'] = 'Please enter a movie title to search.';
+        }
+        
         if (!empty($searchTerm)) {
             // Call the searchMovies method on the OmdbApi instance
             $movies = $this->omdbApi->searchMovies($searchTerm);
-            if ($movies === false) {
+
+            if (empty($movies)) {
                 $data['error'] = 'Could not fetch movies from OMDB. Please try again later.';
-            } else if (empty($movies)) {
-                 $data['message'] = 'No movies found for "' . htmlspecialchars($searchTerm) . '".';
+            } else {
+                $data['movies'] = $movies;
             }
         }
-        $data['searchTerm'] = htmlspecialchars($searchTerm);
-        $data['movies'] = $movies;
+        
+        // $data['searchTerm'] = htmlspecialchars($searchTerm);
+        // $data['movies'] = $movies;
 
-        // Display results on the home page (using the correct view path)
-        $this->view('home/index', $data);
+        // // Display results on the home page (using the correct view path)
+        $this->view('movie/search_results', $data);
     }
 
     public function details($imdbId = '') {

@@ -21,6 +21,10 @@ class App {
          * if not, then go to this->controller which is defaulted to home 
          */
 
+        // echo '<pre>';
+        // print_r($url);
+        // die;
+
         if (isset($url[1]) && file_exists('app/controllers/' . $url[1] . '.php')) {
             $this->controller = $url[1];
 
@@ -44,6 +48,14 @@ class App {
 
         $this->controller = new $this->controller;
 
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // Clean up query parameters from URL[2]
+            if (isset($url[2])) {
+                // Split by '?' to remove query string if present
+                $url[2] = explode('?', $url[2])[0];
+            }
+        }
+        
         // check to see if method is passed
         // check to see if it exists
         if (isset($url[2])) {

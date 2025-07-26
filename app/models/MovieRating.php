@@ -1,18 +1,10 @@
 <?php
 
-// app/models/MovieRating.php
-
-require_once __DIR__ . '/../libraries/Database.php'; // ✅ Include your DB class
-
 class MovieRating {
-    private $db;
-
-    public function __construct() {
-        $database = new Database();           // ✅ Create DB object
-        $this->db = $database->getConnection(); // ✅ Get PDO connection
-    }
+    public function __construct() {}
 
     public function saveRating($userId, $imdbId, $rating) {
+        $db = db_connect();
         $stmt = $this->db->prepare("SELECT id FROM movie_ratings WHERE user_id = :user_id AND imdb_id = :imdb_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':imdb_id', $imdbId, PDO::PARAM_STR);

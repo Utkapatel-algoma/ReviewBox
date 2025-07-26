@@ -25,13 +25,17 @@ class OmdbApi extends Api {
             error_log('OMDB API key is missing for searchMovies.');
             return false;
         }
+        
         $url = $this->baseUrl . '?s=' . urlencode($title) . '&apikey=' . $this->apiKey;
+        
         $response = $this->makeRequest($url); // Using parent's makeRequest
 
         if ($response && isset($response['Search']) && $response['Response'] === 'True') {
             return $response['Search'];
         }
+        
         error_log('OMDB search failed for title: ' . $title . ' Response: ' . json_encode($response));
+        
         return false;
     }
 
