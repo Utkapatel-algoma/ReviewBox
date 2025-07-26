@@ -48,4 +48,12 @@ class MovieRating {
         
         return $result ? (int)$result['rating'] : 0;
     }
+
+    public function getAllRatingsByUserId($userId) {
+        $db = db_connect();
+        $stmt = $db->prepare("SELECT imdb_id, rating FROM movie_ratings WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

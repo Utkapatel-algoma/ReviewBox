@@ -2,6 +2,8 @@
 
 <div class="container mt-4">
   <h1 class="text-center mb-4">Search results</h1>
+
+  <a href="/home" class="btn btn-secondary mb-3">Back to Search</a>
   
   <?php if (isset($data['error'])): ?>
     <div class="alert alert-danger text-center" role="alert">
