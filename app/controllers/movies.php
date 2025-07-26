@@ -3,9 +3,11 @@
 // app/controllers/movie.php
 
 // Ensure all necessary model files are included using the defined constants
-require_once MODELS . DS . 'Api.php'; 
-require_once MODELS . DS . 'OmdbApi.php';
-require_once MODELS . DS . 'MovieRating.php';
+// require_once MODELS . DS . 'Api.php'; 
+// require_once MODELS . DS . 'OmdbApi.php';
+// require_once MODELS . DS . 'MovieRating.php';
+require_once 'app/models/OmdbApi.php';
+require_once 'app/models/MovieRating.php';
 
 class Movies extends Controller {
 
@@ -67,6 +69,13 @@ class Movies extends Controller {
             $data['movie'] = $movieDetails;
         }
 
+        $userRating = $this->movieRatingModel->getUserRating($_SESSION['user_id'] ?? 0, $imdbId);
+
+        if ($userRating > 0) {
+            $data['movie']['userRating'] = $userRating;
+        }
+
+
         $this->view('movie/details', $data);
         // Get average rating from DB
         // $averageRating = $this->movieRatingModel->getAverageRating($imdbId);
@@ -84,15 +93,23 @@ class Movies extends Controller {
     }
 
     public function rate() {
+        // print_r($_POST);
+        // print_r($_SERVER['REQUEST_METHOD']);
+        // die;
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $imdbId = $_POST['imdb_id'] ?? '';
-            // Filter and validate rating to ensure it's an integer between 1 and 5
-            $rating = filter_input(INPUT_POST, 'rating', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 5]]);
-            $userId = $_SESSION['user_id'] ?? null; // Get user ID from session, null if not logged in
-
+            $imdbId = $_POST['movie_id'] ?? '';
+            
+            $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : null;
+            if ($rating < 1 || $rating > 5) {
+                $rating = null;
+            }
+            
+            $userId = $_SESSION['user_id'] ?? 0;
+            
             // Validate inputs
             if (empty($imdbId) || $rating === false) { // $rating will be false if validation fails
-                $_SESSION['error_message'] = 'Invalid movie ID or rating. Rating must be a whole number between 1 and 5.';
+                $_SESSION['error'] = 'Invalid movie ID or rating. Rating must be a whole number between 1 and 5.';
                 header('Location: /movie/details/' . urlencode($imdbId));
                 exit();
             }
@@ -105,7 +122,8 @@ class Movies extends Controller {
             }
 
             // Redirect back to the movie details page
-            header('Location: /movie/details/' . urlencode($imdbId));
+            // header('Location: /movie/details/' . urlencode($imdbId));
+            $this->details($imdbId);
             exit();
         } else {
             // If not a POST request, redirect to home
