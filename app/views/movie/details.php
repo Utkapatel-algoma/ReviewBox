@@ -99,7 +99,6 @@
             </div>
 
             <input type="text" hidden value="<?php echo htmlspecialchars($movie['Title']); ?>" id="movieTitleInput" /> 
-            <input type="hidden" id="movie_review" name="movie_review" value="<?php echo htmlspecialchars($userReview); ?>">
 
           <button id="generateReviewBtn" class="btn btn-primary">Generate Review</button>
           <button id="submitButton" class="btn btn-primary">Submit</button>
@@ -130,7 +129,7 @@
     const reviewText = review.tagName === 'TEXTAREA' ? review.value : review.innerText;
     
     formData.append('review', reviewText);
-
+    
     form.submit();
   });
     

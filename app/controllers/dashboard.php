@@ -26,10 +26,12 @@ class Dashboard extends Controller {
           if ($movie) {
               // Step 4: Append the user's rating to the movie info
               $movie['user_rating'] = $rating['rating'];
+              $movie['user_review'] = $rating['review'];
               $moviesWithRatings[] = $movie;
           }
       }
-        $this->view('dashboard/index', ['ratedMovies' => $moviesWithRatings]);
+      
+      $this->view('dashboard/index', ['ratedMovies' => $moviesWithRatings]);
       die;
     }  
 }

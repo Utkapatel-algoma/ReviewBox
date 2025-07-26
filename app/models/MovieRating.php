@@ -10,7 +10,7 @@ class MovieRating {
         $stmt->bindParam(':imdb_id', $imdbId, PDO::PARAM_STR);
         $stmt->execute();
         $existingRating = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        
         if ($existingRating) {
             $stmt = $db->prepare("UPDATE movie_ratings SET rating = :rating, review = :review created_at = NOW() WHERE id = :id");
             $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
@@ -23,7 +23,7 @@ class MovieRating {
             $stmt->bindParam(':review', $review, PDO::PARAM_STR);
             $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
         }
-
+        
         try {
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -53,7 +53,7 @@ class MovieRating {
 
     public function getAllRatingsByUserId($userId) {
         $db = db_connect();
-        $stmt = $db->prepare("SELECT imdb_id, rating FROM movie_ratings WHERE user_id = :user_id");
+        $stmt = $db->prepare("SELECT imdb_id, rating, review FROM movie_ratings WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

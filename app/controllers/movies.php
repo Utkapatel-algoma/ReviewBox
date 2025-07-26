@@ -73,7 +73,7 @@ class Movies extends Controller {
         }
 
         $userRating = $this->movieRatingModel->getUserRating($_SESSION['user_id'] ?? 0, $imdbId);
-
+        
         if ($userRating > 0) {
             $data['movie']['userRating'] = $userRating['rating'];
             $data['movie']['userReview'] = $userRating['review'];
@@ -83,41 +83,34 @@ class Movies extends Controller {
     }
 
     public function rate() {
+        $imdbId = $_POST['movie_id'] ?? '';
         
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $imdbId = $_POST['movie_id'] ?? '';
-            
-            $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : null;
-            if ($rating < 1 || $rating > 5) {
-                $rating = null;
-            }
-            
-            $userId = $_SESSION['user_id'] ?? 0;
-            $review = $_POST['movie_review'] ?? '';
-            
-            // Validate inputs
-            if (empty($imdbId) || $rating === false) { // $rating will be false if validation fails
-                $_SESSION['error'] = 'Invalid movie ID or rating. Rating must be a whole number between 1 and 5.';
-                header('Location: /movie/details/' . urlencode($imdbId));
-                exit();
-            }
-            
-            // Save the rating to the database
-            if ($this->movieRatingModel->saveRating($userId, $imdbId, $rating, $review)) {
-                $_SESSION['success_message'] = 'Your rating has been saved successfully!';
-            } else {
-                $_SESSION['error_message'] = 'Failed to save your rating. Please try again.';
-            }
-
-            // Redirect back to the movie details page
-            // header('Location: /movie/details/' . urlencode($imdbId));
-            $this->details($imdbId);
-            exit();
-        } else {
-            // If not a POST request, redirect to home
-            header('Location: /home');
+        $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : null;
+        
+        if ($rating < 1 || $rating > 5) {
+            $rating = null;
+        }
+        
+        $userId = $_SESSION['user_id'] ?? 0;
+        $review = $_POST['movie_review'] ?? '';
+        
+        // Validate inputs
+        if (empty($imdbId) || $rating === false) { // $rating will be false if validation fails
+            $_SESSION['error'] = 'Invalid movie ID or rating. Rating must be a whole number between 1 and 5.';
+            header('Location: /movie/details/' . urlencode($imdbId));
             exit();
         }
+        
+        // Save the rating to the database
+        if ($this->movieRatingModel->saveRating($userId, $imdbId, $rating, $review)) {
+            $_SESSION['success_message'] = 'Your rating has been saved successfully!';
+        } else {
+            $_SESSION['error_message'] = 'Failed to save your rating. Please try again.';
+        }
+
+        // Redirect back to the movie details page
+        header('Location: /movie/details/' . urlencode($imdbId));
+        exit();
     }
 
     public function generateReview() {
