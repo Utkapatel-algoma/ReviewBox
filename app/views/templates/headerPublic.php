@@ -1,7 +1,7 @@
 <?php
-if (isset($_SESSION['auth']) == 1) {
-    header('Location: /home');
-}
+// if (isset($_SESSION['auth']) == 1) {
+//     header('Location: /home');
+// }
 ?>
 
 <!DOCTYPE html>

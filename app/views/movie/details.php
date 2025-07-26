@@ -1,7 +1,9 @@
 <?php require_once 'app/views/templates/headerPublic.php'; ?>
 
 <div class="container mt-5">
-  <a href="/home" class="btn btn-secondary mb-3">Back to Search</a>
+  <a href="<?php echo isset($_SESSION['auth']) && $_SESSION['auth'] == 1 ? '/dashboard' : '/home'; ?>" class="btn btn-secondary mb-3">
+    Back to <?php echo isset($_SESSION['auth']) && $_SESSION['auth'] == 1 ? 'Dashboard' : 'Search'; ?>
+  </a>
   <?php if (isset($data['error'])): ?>
     <div class="alert alert-danger text-center" role="alert">
       <?php echo htmlspecialchars($data['error']); ?>

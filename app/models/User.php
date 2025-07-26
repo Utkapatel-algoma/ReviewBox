@@ -33,8 +33,9 @@ class User {
   		if (password_verify($password, $rows['password'])) {
   			$_SESSION['auth'] = 1;
   			$_SESSION['username'] = ucwords($username);
+        $_SESSION['user_id'] = $rows['id'];
   			unset($_SESSION['failedAuth']);
-  			header('Location: /home');
+  			header('Location: /dashboard');
   			die;
   		} else {
   			if(isset($_SESSION['failedAuth'])) {
