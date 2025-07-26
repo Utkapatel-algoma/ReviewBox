@@ -19,3 +19,5 @@ define('DB_USER',         $_ENV['DB_USER']);
 define('DB_PASS',         $_ENV['DB_PASS']);
 define('DB_DATABASE',     $_ENV['DB_DATABASE']);
 define('DB_PORT',         $_ENV['DB_PORT']);
+define('GEMINI_API_KEY', $_ENV['GEMINI_API_KEY']);
+define('OMDB_API_KEY', $_ENV['OMDB_API']);

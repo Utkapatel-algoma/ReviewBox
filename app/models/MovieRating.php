@@ -1,0 +1,57 @@
+<?php
+
+// app/models/MovieRating.php
+
+require_once __DIR__ . '/../libraries/Database.php'; // ✅ Include your DB class
+
+class MovieRating {
+    private $db;
+
+    public function __construct() {
+        $database = new Database();           // ✅ Create DB object
+        $this->db = $database->getConnection(); // ✅ Get PDO connection
+    }
+
+    public function saveRating($userId, $imdbId, $rating) {
+        $stmt = $this->db->prepare("SELECT id FROM movie_ratings WHERE user_id = :user_id AND imdb_id = :imdb_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':imdb_id', $imdbId, PDO::PARAM_STR);
+        $stmt->execute();
+        $existingRating = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingRating) {
+            $stmt = $this->db->prepare("UPDATE movie_ratings SET rating = :rating, created_at = NOW() WHERE id = :id");
+            $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $existingRating['id'], PDO::PARAM_INT);
+        } else {
+            $stmt = $this->db->prepare("INSERT INTO movie_ratings (user_id, imdb_id, rating, created_at) VALUES (:user_id, :imdb_id, :rating, NOW())");
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':imdb_id', $imdbId, PDO::PARAM_STR);
+            $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+        }
+
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Database Error (saveRating): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getAverageRating($imdbId) {
+        $stmt = $this->db->prepare("SELECT AVG(rating) as avg_rating FROM movie_ratings WHERE imdb_id = :imdb_id");
+        $stmt->bindParam(':imdb_id', $imdbId, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? (float)$result['avg_rating'] : null;
+    }
+
+    public function getUserRating($userId, $imdbId) {
+        $stmt = $this->db->prepare("SELECT rating FROM movie_ratings WHERE user_id = :user_id AND imdb_id = :imdb_id");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':imdb_id', $imdbId, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? (int)$result['rating'] : null;
+    }
+}
