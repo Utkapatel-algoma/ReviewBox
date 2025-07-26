@@ -4,7 +4,7 @@ class App {
 
     protected $controller = 'login';
     protected $method = 'index';
-    protected $special_url = ['apply'];
+    protected $special_url = ['apply', '/movie/generateReview'];
     protected $params = [];
 
     public function __construct() {
