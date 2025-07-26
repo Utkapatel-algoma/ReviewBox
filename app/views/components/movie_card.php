@@ -8,7 +8,7 @@
         <p class="card-text text-muted"><?php echo htmlspecialchars($movie_data['Year']); ?></p>
         <p class="card-text text-muted">Type: <?php echo htmlspecialchars(ucfirst($movie_data['Type'])); ?></p>
         <div class="mt-auto">
-            <a href="/movie/details/<?php echo htmlspecialchars($movie_data['imdbID']); ?>" class="btn btn-outline-primary btn-sm">View Details</a>
+            <a href="/movies/details/<?php echo htmlspecialchars($movie_data['imdbID']); ?>" class="btn btn-outline-primary btn-sm">View Details</a>
         </div>
     </div>
 </div>

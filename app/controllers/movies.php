@@ -31,16 +31,6 @@ class Movies extends Controller {
         }
     }
 
-    // public function index($imdbId = null) {
-    //     if ($imdbId) {
-    //         $this->details($imdbId);
-    //     } else {
-    //         // Default action if no movie ID is provided, redirect to home page
-    //         header('Location: /home');
-    //         exit();
-    //     }
-    // }
-
     public function search() {
         $searchTerm = $_GET['query'] ?? '';
         $data = []; // Initialize movies array
@@ -60,10 +50,6 @@ class Movies extends Controller {
             }
         }
         
-        // $data['searchTerm'] = htmlspecialchars($searchTerm);
-        // $data['movies'] = $movies;
-
-        // // Display results on the home page (using the correct view path)
         $this->view('movie/search_results', $data);
     }
 
@@ -74,26 +60,27 @@ class Movies extends Controller {
         }
 
         $movieDetails = $this->omdbApi->getMovieDetails($imdbId);
-
+        
         if (!$movieDetails) {
             $data['error'] = 'Movie not found or OMDB API error.';
-            $this->view('movie_details', $data); // Render movie_details view with an error
-            return;
+        } else {
+            $data['movie'] = $movieDetails;
         }
 
+        $this->view('movie/details', $data);
         // Get average rating from DB
-        $averageRating = $this->movieRatingModel->getAverageRating($imdbId);
-        $data['averageRating'] = round($averageRating, 1); // Round to 1 decimal place
+        // $averageRating = $this->movieRatingModel->getAverageRating($imdbId);
+        // $data['averageRating'] = round($averageRating, 1); // Round to 1 decimal place
 
-        // Get user's rating if logged in
-        $userId = $_SESSION['user_id'] ?? null; // Assuming user_id is stored in session after login
-        $data['userRating'] = $this->movieRatingModel->getUserRating($userId, $imdbId);
-        $data['currentUserId'] = $userId; // Pass current user ID to the view for conditional display
+        // // Get user's rating if logged in
+        // $userId = $_SESSION['user_id'] ?? null; // Assuming user_id is stored in session after login
+        // $data['userRating'] = $this->movieRatingModel->getUserRating($userId, $imdbId);
+        // $data['currentUserId'] = $userId; // Pass current user ID to the view for conditional display
 
-        $data['movie'] = $movieDetails; // Pass movie details to the view
-        $data['imdbId'] = $imdbId; // Pass IMDb ID for forms (rating, review)
+        // $data['movie'] = $movieDetails; // Pass movie details to the view
+        // $data['imdbId'] = $imdbId; // Pass IMDb ID for forms (rating, review)
 
-        $this->view('movie_details', $data); // Render the movie_details view
+        // $this->view('movie_details', $data); // Render the movie_details view
     }
 
     public function rate() {

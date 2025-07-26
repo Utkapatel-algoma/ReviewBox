@@ -51,6 +51,7 @@ class OmdbApi extends Api {
             return $response;
         }
         error_log('OMDB details fetch failed for IMDb ID: ' . $imdbId . ' Response: ' . json_encode($response));
+        
         return false;
     }
 }
