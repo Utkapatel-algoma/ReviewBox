@@ -1,7 +1,7 @@
 <?php
 // app/views/home/index.php
 
-// These variables will be passed from the controller if a search was performed
+// These variables will be passed from the controller if a search was performed - working
     $searchTerm = $data['searchTerm'] ?? '';
     $movies = $data['movies'] ?? [];
     $message = $data['message'] ?? '';

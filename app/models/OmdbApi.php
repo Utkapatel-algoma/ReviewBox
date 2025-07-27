@@ -10,11 +10,11 @@ class OmdbApi extends Api {
     private $baseUrl = 'http://www.omdbapi.com/';
 
     public function __construct() {
-        // Ensure OMDB_API_KEY is defined in config.php from your Replit secrets
+        // Ensure OMDB_API_KEY is defined in config.php 
         if (defined('OMDB_API_KEY')) {
             $this->apiKey = OMDB_API_KEY;
         } else {
-            // Handle case where API key is not defined (e.g., throw error, log)
+            // edited
             $this->apiKey = null;
             error_log('OMDB_API_KEY is not defined. Check config.php and Replit secrets.');
         }
@@ -28,7 +28,7 @@ class OmdbApi extends Api {
         
         $url = $this->baseUrl . '?s=' . urlencode($title) . '&apikey=' . $this->apiKey;
         
-        $response = $this->makeRequest($url); // Using parent's makeRequest
+        $response = $this->makeRequest($url); // Using parent's makeRequest - checked
 
         if ($response && isset($response['Search']) && $response['Response'] === 'True') {
             return $response['Search'];
@@ -45,7 +45,7 @@ class OmdbApi extends Api {
             return false;
         }
         $url = $this->baseUrl . '?i=' . urlencode($imdbId) . '&apikey=' . $this->apiKey;
-        $response = $this->makeRequest($url); // Using parent's makeRequest
+        $response = $this->makeRequest($url); // Using parent's makeRequest - working
 
         if ($response && $response['Response'] === 'True') {
             return $response;
